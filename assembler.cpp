@@ -83,31 +83,30 @@ string limpiar(const string& linea) {
 void primeraPasada(const vector<string>& lineas, unordered_map<string, int>& tabla) {
     int rom = 0;
     for (const string& l : lineas) {
-        // TODO (Leo):
-        // - Si l empieza con '(':
-        //       string nombre = l.substr(1, l.size() - 2);   // quita ( y )
-        //       tabla[nombre] = rom;
-        //       (NO se suma rom: una etiqueta no es instruccion)
-        // - Si no:
-        //       rom++;
-        (void)l; (void)tabla; (void)rom; // borrar esta linea al implementar
+        if (l[0] == '(') {
+            string nombre = l.substr(1, l.size() - 2); 
+            tabla[nombre] = rom;
+        } else {
+            rom++;
+        }
     }
 }
 
 // ===================== LEO: INSTRUCCION A =====================
 // @valor  ->  0 + 15 bits de la direccion
 string traducirA(const string& linea, unordered_map<string, int>& tabla, int& siguienteVariable) {
-    string valor = linea.substr(1);   // quita el '@'
+    string valor = linea.substr(1);
     int direccion = 0;
 
-    // TODO (Leo):
-    // 1. Si isdigit(valor[0])        -> direccion = stoi(valor);         (ej. @21)
-    // 2. Si no, si tabla.count(valor) -> direccion = tabla[valor];       (ej. @R0, @LOOP)
-    // 3. Si no (variable nueva)      -> tabla[valor] = siguienteVariable;
-    //                                   direccion = siguienteVariable;
-    //                                   siguienteVariable++;            (empieza en 16)
-    (void)tabla; (void)siguienteVariable; // borrar esta linea al implementar
-
+    if (isdigit((unsigned char)valor[0])) {
+        direccion = stoi(valor);
+    } else if (tabla.count(valor)) {
+        direccion = tabla[valor];
+    } else {
+        tabla[valor] = siguienteVariable;
+        direccion = siguienteVariable;
+        siguienteVariable++;
+    }
     return bitset<16>(direccion).to_string();
 }
 
@@ -133,7 +132,7 @@ string traducirC(const string& linea) {
     return "111" + COMP.at(comp) + DEST.at(dest) + JUMP.at(jump);
 }
 
-// ===================== MAIN (ya hecho) =====================
+// ===================== MAIN  =====================
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         cerr << "Uso: ./assembler Prog.asm\n";
@@ -165,7 +164,7 @@ int main(int argc, char* argv[]) {
     int siguienteVariable = 16;
 
     for (const string& l : lineas) {
-        if (l[0] == '(') continue;                     // etiquetas no generan codigo
+        if (l[0] == '(') continue;                     
         if (l[0] == '@') out << traducirA(l, tabla, siguienteVariable) << "\n";
         else             out << traducirC(l) << "\n";
     }

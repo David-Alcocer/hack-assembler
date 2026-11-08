@@ -118,16 +118,17 @@ string traducirC(const string& linea) {
     string comp = linea;
     string jump = "";
 
-    // TODO (Misa):
-    // 1. size_t igual = comp.find('=');
-    //    Si igual != string::npos:
-    //        dest = comp.substr(0, igual);
-    //        comp = comp.substr(igual + 1);
-    // 2. size_t pc = comp.find(';');
-    //    Si pc != string::npos:
-    //        jump = comp.substr(pc + 1);
-    //        comp = comp.substr(0, pc);
-    // Cuando esto funcione, la linea de abajo ya da el resultado correcto.
+    size_t igual = comp.find('=');
+    if (igual != string::npos) {
+        dest = comp.substr(0, igual);
+        comp = comp.substr(igual + 1);
+    }
+
+    size_t pc = comp.find(';');
+    if (pc != string::npos) {
+        jump = comp.substr(pc + 1);
+        comp = comp.substr(0, pc);
+    }
 
     return "111" + COMP.at(comp) + DEST.at(dest) + JUMP.at(jump);
 }

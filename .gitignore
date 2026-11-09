@@ -1,0 +1,9 @@
+# Ejecutable compilado
+assembler
+assembler.exe
+
+# Archivos generados por el ensamblador
+*.hack
+
+# macOS
+.DS_Store
